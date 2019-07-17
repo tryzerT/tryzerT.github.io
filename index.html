@@ -152,6 +152,102 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-flask项目部署到服务器" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="如何把自己的flask项目部署到服务器"><a href="#如何把自己的flask项目部署到服务器" class="headerlink" title="如何把自己的flask项目部署到服务器"></a>如何把自己的flask项目部署到服务器</h1><hr>
+<h2 id="用python搭建个人网盘"><a href="#用python搭建个人网盘" class="headerlink" title="用python搭建个人网盘"></a>用python搭建个人网盘</h2><p>租的阿里云服务器快要到期了，想着能不能做一个项目放在上面。折腾了两天，踩了许多坑，总算成功把自己的一个python小网站放到服务器上跑起来了。特地记录一下。过程是参考b站的一个<a href="https://www.bilibili.com/video/av23691850/?p=35" target="_blank" rel="noopener"><strong>视频教程。</strong></a></p>
+<p>当然首先，是需要一台<strong>服务器</strong>。要点：</p>
+<blockquote>
+<ul>
+<li>python虚拟环境工具virtualenv</li>
+<li>web框架flask</li>
+<li>进程管理工具supervisor</li>
+<li>Wsgi http serve用的是gunicorn</li>
+<li>代理服务器nginx</li>
+</ul>
+</blockquote>
+<p>操作系统用的是ubutnu。</p>
+<h3 id="1-安装virtualenv"><a href="#1-安装virtualenv" class="headerlink" title="1:安装virtualenv"></a>1:安装virtualenv</h3><p>命令行输入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install virtualenv</span><br></pre></td></tr></table></figure>
+
+<h3 id="2：安装flask-gunicorn和supervisor"><a href="#2：安装flask-gunicorn和supervisor" class="headerlink" title="2：安装flask, gunicorn和supervisor"></a>2：安装flask, gunicorn和supervisor</h3><p>进入虚拟环境，然后命令行输入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pip install flask</span><br><span class="line">pip install gunicorn</span><br><span class="line">pip install supervisor</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-安装nginx"><a href="#3-安装nginx" class="headerlink" title="3:安装nginx"></a>3:安装nginx</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install nginx</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-修改supervisor配置文件"><a href="#4-修改supervisor配置文件" class="headerlink" title="4.修改supervisor配置文件"></a>4.修改supervisor配置文件</h3><p>supervisord的配置文件一般在这个目录/etc/supervisor</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd /etc/supervisor/conf.d  #自定义配置文件</span><br></pre></td></tr></table></figure>
+
+<p>在conf.d文件夹下新建一个配置文件，后缀名.conf。例如：todo.conf<br>然后在新建todo.conf文件里加入下面内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">command = /root/filemanagesystem2/venv/bin/gunicorn -b 127.0.0.1:9000 app:app  #第一行</span><br><span class="line">directory = /root/filemanagesystem2  #第二行</span><br></pre></td></tr></table></figure>
+
+<p>其中，/root/filemanagesystem2为项目文件夹的绝对地址。<br>/root/filemanagesystem2/venv为虚拟环境virtualenv生成的文件。<br>第一行的第一个 “app” 为项目要运行的python主文件名称（当然换成其他名称也行）。比如，生产环境下你这样运行python test.py。那么此时对于的python文件名称就是test了。第二个app为此文件内实例化的Flask对象。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">#app.py</span><br><span class="line">from flask import Flask</span><br><span class="line">app = Flask(__name__)</span><br><span class="line"></span><br><span class="line">@app.route(&apos;/&apos;)</span><br><span class="line">def index():</span><br><span class="line">    return &apos;Hello world!&apos;</span><br><span class="line"></span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">    app.run()</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-修改nginx配置文件"><a href="#5-修改nginx配置文件" class="headerlink" title="5.修改nginx配置文件"></a>5.修改nginx配置文件</h3><p>进入nginx配置文件位置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd /etc/nginx/sites-available</span><br></pre></td></tr></table></figure>
+
+<p><a href="../../111.png">如图所示加上三句话</a></p>
+<p>然后重启nginx</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">nginx reload</span><br><span class="line">service nginx restart</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-启动supervisor"><a href="#6-启动supervisor" class="headerlink" title="6.启动supervisor"></a>6.启动supervisor</h3><p>命令行输入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">supervisorctl</span><br></pre></td></tr></table></figure>
+
+<p>可以查看当前守护的进程。</p>
+<figure class="highlight plain"><figcaption><span>supervisorctl #例如输入后可看到下面一行</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">todo                             RUNNING   pid 31290, uptime 5:10:10</span><br></pre></td></tr></table></figure>
+
+<p>todo是当前正在运行的进程。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">stop todo #关闭进程todo</span><br><span class="line">start todo #开启进程</span><br></pre></td></tr></table></figure>
+
+<p>然后浏览器输入服务器公网ip就可以浏览配置好的网页了。<br>一个很简陋的网页功能。<br><a href="../../1.png">登录页面</a></p>
+<p><a href="../../2.png">登录后的主页</a></p>
+<p>点击视频或音乐可以在线播放。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/07/17/flask项目部署到服务器/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-如何搭建自己的个人博客" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
