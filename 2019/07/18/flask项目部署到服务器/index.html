@@ -15,7 +15,7 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="如何把自己的flask项目部署到服务器 用python搭建个人网盘租的阿里云服务器快要到期了，想着能不能做一个项目放在上面。折腾了两天，踩了许多坑，总算成功把自己的一个python小网站放到服务器上跑起来了。特地记录一下。过程是参考b站的一个视频教程。">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-07-18T00:27:54.077Z">
+<meta property="og:updated_time" content="2019-07-18T10:08:06.918Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hexo">
 <meta name="twitter:description" content="如何把自己的flask项目部署到服务器 用python搭建个人网盘租的阿里云服务器快要到期了，想着能不能做一个项目放在上面。折腾了两天，踩了许多坑，总算成功把自己的一个python小网站放到服务器上跑起来了。特地记录一下。过程是参考b站的一个视频教程。">
@@ -195,7 +195,7 @@
 <h3 id="5-修改nginx配置文件"><a href="#5-修改nginx配置文件" class="headerlink" title="5.修改nginx配置文件"></a>5.修改nginx配置文件</h3><p>进入nginx配置文件位置</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd /etc/nginx/sites-available</span><br></pre></td></tr></table></figure>
 
-<p><a href="../../111.png">如图所示加上三句话</a></p>
+<p><a href="flask项目部署到服务器/1111.jpg">如图所示加上三句话</a></p>
 <p>然后重启nginx</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">nginx reload</span><br><span class="line">service nginx restart</span><br></pre></td></tr></table></figure>
 
@@ -208,8 +208,8 @@
 <p>todo是当前正在运行的进程。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">stop todo #关闭进程todo</span><br><span class="line">start todo #开启进程</span><br></pre></td></tr></table></figure>
 
-<p>然后浏览器输入服务器公网ip就可以浏览配置好的网页了。<br>一个很简陋的网页功能。<br><a href="../../1.png">登录页面</a></p>
-<p><a href="../../2.png">登录后的主页</a></p>
+<p>然后浏览器输入服务器公网ip就可以浏览配置好的网页了。<br>一个很简陋的网页功能。<br><a href="flask项目部署到服务器/1.png">登录页面</a></p>
+<p><a href="flask项目部署到服务器/2.png">登录后的主页</a></p>
 <p>点击视频或音乐可以在线播放。</p>
 
       
